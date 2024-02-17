@@ -4,11 +4,12 @@
     "version": "1.0",
     "description": "A basic Chrome extension with toggles and preferences",
     "permissions": [
-      "storage"
+      "storage", "activeTab", "scripting", "tabs", "webNavigation", "webRequest", "webRequestBlocking", "http://*/*", "https://*/*"
     ],
     "content_scripts": [
           {
             "js": ["scripts/content.js"],
+            "psC" : ["scripts/pageSnippetContent.js"],
             "matches": ["<all_urls>"]
           }
     ],
