@@ -1,3 +1,6 @@
+const dontFetch = true;
+
+
 // Function to fetch CSS file
 function fetchCSS(url) {
     return fetch(url)
@@ -30,7 +33,14 @@ Promise.all(Array.from(linkElements).map(linkElement => {
             cssContentArray.push(cssContent);
         });
 }))
+
+
 .then(() => {
+    if (dontFetch) {
+        console.log('dontFetch')
+        return;
+    }
+
     // Extract inline styles
     var inlineStyles = extractInlineStyles();
     cssContentArray.push(inlineStyles);
