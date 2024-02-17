@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Inklusiv",
+    "version": "1.0",
+    "description": "A basic Chrome extension with toggles and preferences",
+    "permissions": [
+      "storage"
+    ],
+    "content_scripts": [
+          {
+            "js": ["scripts/content.js"],
+            "matches": ["<all_urls>"]
+          }
+    ],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "images/icon.png",
+        "48": "images/icon.png",
+        "128": "images/icon.png"
+      }
+    },
+    "icons": {
+      "16": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
+    }
+}
+  
