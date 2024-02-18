@@ -35,7 +35,7 @@ for (var i = 0; i < stylesheets.length; i++) {
 var inlineStyles = extractInlineStyles();
 cssContentArray.push(inlineStyles);
 
-console.log('fetching jeetpt')
+doColorBlind && console.log('fetching jeetpt')
 // Concatenate all CSS content
 var allCSSContent = cssContentArray.join('\n'); // Concatenate CSS content with newline separator
 doColorBlind && fetch('https://api.openai.com/v1/chat/completions', {

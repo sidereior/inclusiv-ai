@@ -25,7 +25,7 @@ async def modify_css(ctx: Context, sender: str, msg: CSSRequest):
             },
             {
                 "role": "user",
-                "content": f"Generate in depth and comprehensive css code to make the following code of a website be accessible to red-green colorblind people. Current CSS: {msg.css_content}"
+                  "content": f"Generate in depth and comprehensive css code to make the following code of a website be accessible to red-green colorblind people. Increase color contrast between red and green elements by adjusting their hues, saturation, or brightness. Replace red and green color combinations with alternative colors that are easier to distinguish, such as blue and yellow. Don't rewrite the entire css only generate as little new css as possible. Use things like !important! to ensure it overrides, and ensure that the css will work properly and update the visuals of the site. Respond only with css code and nothing else in this format: <style>CODE GOES HERE</style>. Current CSS: {msg.css_content}"
             }
         ]
     }

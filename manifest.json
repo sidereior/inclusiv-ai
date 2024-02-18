@@ -4,30 +4,55 @@
   "version": "1.0",
   "description": "Copilot for web accessibility",
   "permissions": [
-    "storage", "activeTab", "scripting", "tabs", "webNavigation", "webRequest", "webRequestBlocking"
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "host_permissions": [
-    "http://*/*", 
-    "https://*/*"
+    "<all_urls>"
   ],
-    "web_accessible_resources": [
-      {
-        "resources": ["assets/fonts/*"],
-        "matches": ["<all_urls>"]
-      }
-    ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/fonts/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
   "content_scripts": [
     {
-      "js": ["scripts/colorblind.js"],
-            "matches": ["<all_urls>"]
-          },
-          {
-            "js": ["scripts/adhd.js"],
-            "matches": ["<all_urls>"]
-          },
-          {
-            "js": ["scripts/dyslexia.js", "scripts/pageSnippetContent.js"],
-      "matches": ["<all_urls>"]
+      "js": [
+        "scripts/colorblind.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    },
+    {
+      "js": [
+        "scripts/adhd.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    },
+    {
+      "js": [
+        "scripts/dyslexia.js",
+        "scripts/pageSnippetContent.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "action": {
