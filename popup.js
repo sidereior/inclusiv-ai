@@ -2,6 +2,13 @@
 
 
 // popup.js
+
+const playAudio = (url) => {
+  audioElement.src = url
+  audioElement.play()
+}
+
+
 let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
@@ -30,7 +37,7 @@ recordButton.addEventListener('click', () => {
         mediaRecorder.onstop = () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
           const audioUrl = URL.createObjectURL(audioBlob);
-          audioElement.src = audioUrl;
+          // speechToText(audioBlob);
 
           const form = new FormData();
           form.append('file', audioBlob, 'audio.wav');
@@ -199,6 +206,7 @@ fetch('https://api.monsterapi.ai/v1/generate/codellama-13b-instruct', options3)
           recordButton.classList.remove('recording'); // Stop the animation
           micShadow.style.display = 'none'; // Hide the shadow
           isRecording = false;
+
         };
 
         mediaRecorder.start();
@@ -288,7 +296,8 @@ const explainPageBtn = document.getElementById('explainPage');
 const explainPageResuts = document.getElementById('explainPageResults');
 explainPageBtn.addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'explainPage' }, response => {
-    explainPageResults.textContent = response.text;
+    const text = response.text;
+    textToSpeech(text);
   });
 });
 
