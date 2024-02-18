@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 import requests
 from pydantic import BaseModel, Field
 from ai_engine import UAgentResponse, UAgentResponseType
@@ -43,3 +45,4 @@ async def modify_css(ctx: Context, sender: str, msg: CSSRequest):
     )
 
 agent.include(css_modification_protocol, publish_manifest=True)
+>>>>>>> ea38f88a95b7f4c8af5ba736bf6870f28b0ac301
