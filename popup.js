@@ -17,11 +17,6 @@ const micIcon = recordButton.querySelector('.mic-icon');
 const micShadow = recordButton.querySelector('.mic-shadow');
 const audioElement = document.getElementById('audio');
 
-const playAudio = (url) => {
-  audioElement.src = url
-  audioElement.play()
-}
-
 recordButton.addEventListener('click', () => {
   
   if (!isRecording) {
