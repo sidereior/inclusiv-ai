@@ -44,7 +44,7 @@ Promise.all(Array.from(linkElements).map(linkElement => {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                  "model": "gpt-4-turbo-preview",
+                  "model": "gpt-3.5-turbo-preview",
                   "messages": [
                     {
                       "role": "system",
