@@ -3,6 +3,8 @@ let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
 const recordButton = document.getElementById('recordButton');
+const micIcon = recordButton.querySelector('.mic-icon');
+const micShadow = recordButton.querySelector('.mic-shadow');
 const audioElement = document.getElementById('audio');
 
 recordButton.addEventListener('click', () => {
@@ -51,7 +53,7 @@ recordButton.addEventListener('click', () => {
                   method: 'GET',
                   headers: {
                     accept: 'application/json',
-                    authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
+                    authorization: 'Bearer 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'
                   }
                 };
 
@@ -136,20 +138,39 @@ recordButton.addEventListener('click', () => {
             .catch(error => {
               console.error('Error during initial transcription request:', error);
             });
-
           audioElement.play();
+          micIcon.src = 'images/mic-23.png'; // Change back to mic icon
+          recordButton.classList.add('no-animation');
+          recordButton.classList.remove('recording'); // Stop the animation
+          micShadow.style.display = 'none'; // Hide the shadow
+          isRecording = false;
         };
 
         mediaRecorder.start();
-        recordButton.textContent = 'Stop Recording';
+        micIcon.src = 'images/stop-button.png'; // Change to stop icon
+        recordButton.classList.remove('no-animation');
+        recordButton.classList.add('recording'); // Start the animation
+        micShadow.style.display = 'block'; // Show the shadow
+
         isRecording = true;
       })
       .catch(error => {
         console.error('Error accessing the microphone:', error);
       });
   } else {
+    // Stop the recording
     mediaRecorder.stop();
-    recordButton.textContent = 'Start Recording';
-    isRecording = false;
   }
+});
+
+
+
+
+// explainPage
+const explainPageBtn = document.getElementById('explainPage');
+const explainPageResuts = document.getElementById('explainPageResults');
+explainPageBtn.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ action: 'explainPage' }, response => {
+    explainPageResults.textContent = response.text;
+  });
 });

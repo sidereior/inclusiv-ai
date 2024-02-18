@@ -35,14 +35,14 @@ for (var i = 0; i < stylesheets.length; i++) {
 var inlineStyles = extractInlineStyles();
 cssContentArray.push(inlineStyles);
 
-console.log('fetching jeetpt')
+doColorBlind && console.log('fetching jeetpt')
 // Concatenate all CSS content
 var allCSSContent = cssContentArray.join('\n'); // Concatenate CSS content with newline separator
 doColorBlind && fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + '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'
+              'authorization': 'Bearer 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'
             },
             body: JSON.stringify({
               "model": "gpt-4-turbo-preview",
