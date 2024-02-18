@@ -1,5 +1,3 @@
-const activateDyslexia = false;
-
 const cssRules = `
 
 @font-face {
@@ -20,7 +18,6 @@ const cssRules = `
 }
 `;
 
-if (activateDyslexia) {
 // Create a <style> element
 const styleElement = document.createElement('style');
 
@@ -29,5 +26,5 @@ styleElement.textContent = cssRules;
 
 // Append the <style> element to the <head> of the document
 document.head.appendChild(styleElement);
-}
+
 

@@ -5,6 +5,7 @@
   "description": "Copilot for web accessibility",
   "permissions": [
     "storage",
+    "scripting",
     "activeTab",
     "scripting",
     "tabs",
@@ -40,14 +41,6 @@
     {
       "js": [
         "scripts/adhd.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    },
-    {
-      "js": [
-        "scripts/magnify.js"
       ],
       "matches": [
         "<all_urls>"

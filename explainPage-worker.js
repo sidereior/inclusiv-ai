@@ -43,7 +43,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             
         });
     } else {
-      chrome.runtime.sendMessage(message);
-    }
+  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    var activeTab = tabs[0];
+    chrome.scripting
+      .executeScript({
+        target : {tabId : activeTab.id},
+        files : [`scripts/${message.action}.js`],
+      })
+      .then(() => console.log("injected a function"));
+  });
+
+  }
     return true;
   });
+
+
+
+

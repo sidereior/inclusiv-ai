@@ -1,5 +1,3 @@
-const doColorBlind = false;
-
 var cssContentArray = [];
 
 // Function to extract inline styles from HTML elements
@@ -35,10 +33,10 @@ for (var i = 0; i < stylesheets.length; i++) {
 var inlineStyles = extractInlineStyles();
 cssContentArray.push(inlineStyles);
 
-doColorBlind && console.log('fetching gpt')
+console.log('fetching gpt')
 // Concatenate all CSS content
 var allCSSContent = cssContentArray.join('\n'); // Concatenate CSS content with newline separator
-doColorBlind && fetch('https://api.openai.com/v1/chat/completions', {
+fetch('https://api.openai.com/v1/chat/completions', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
