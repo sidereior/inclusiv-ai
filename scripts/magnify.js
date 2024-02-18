@@ -16,3 +16,19 @@ function decreaseZoom() {
         document.body.style.zoom = zoomLevel + '%';
     }
 }
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('got message', message);
+    increaseZoom()
+    if (message?.action === 'magnifyPage') {
+        increaseZoom();
+
+    } else if (message?.action === 'unMagnifyPage') {
+        decreaseZoom();
+    }
+
+    return true;
+}
+)
+
+

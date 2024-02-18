@@ -2,6 +2,7 @@ const response = 'This page is a basic page with no special features.';
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message?.action === 'explainPage') {
+        const user_input = message?.user_input;
         chrome.tabs.captureVisibleTab().then((screenshotDataUrl) => {
             fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
@@ -16,7 +17,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     {
                         "role": "user",
                         "content": [
-                          {"type": "text", "text": `You are a web accessibility partner. Based on the screenshot of the website, wescribe what is on this website for someone who's vision impaired, and how they can navigate it and what they can do with it. Be succint with your language, but explain things in depth and comprehensively so they can fully understand the website. Explain the name of the site, the purpose, how to use it, and more. Imagine you are describing it to a blind person. Speak with conviction, even if you are unsure. Do not use words such as "seems" or "appears" or "likely" and so on. Speak with authority and clarity, even if it's not genuine. Aim to keep the entire thing around 3-4 sentences. Speak in second person tone, directly to the user.`},
+                          {"type": "text", "text": `You are a web accessibility partner. Based on the screenshot of the website, describe what is on this website for someone who's vision impaired, and how they can navigate it and what they can do with it. Consider the user's request from you: ${user_input}. If the user's input has a specific question based on the site, be sure to first answer that and accomodate the request. In general, be succint with your language, but explain things in depth and comprehensively so they can fully understand the website. Explain the name of the site, the purpose, how to use it, and more. Imagine you are describing it to a blind person. Speak with conviction, even if you are unsure. Do not use words such as "seems" or "appears" or "likely" and so on. Speak with authority and clarity, even if it's not genuine. Aim to keep the entire thing around 3-4 sentences. Speak in second person tone, directly to the user. At the end, be friendly and maybe ask if they have any more questions.`},
                           {
                             "type": "image_url",
                             "image_url": {
@@ -41,6 +42,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             
         });
+    } else {
+      chrome.runtime.sendMessage({message});
     }
     return true;
   });

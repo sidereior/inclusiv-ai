@@ -4,6 +4,13 @@ const playAudio = (url) => {
   audioElement.play()
 }
 
+const executeUserRequest = (req, user_input) => {
+  chrome.runtime.sendMessage({ action: req, user_input: user_input }, response => {
+      const text = response?.text;
+      text && textToSpeech(text);
+    })
+}
+
 let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
@@ -14,7 +21,8 @@ const audioElement = document.getElementById('audio');
 const loader = recordButton.querySelector('.loader');
 
 recordButton.addEventListener('click', () => {
-
+  executeUserRequest('magnifyPage', 'test')
+  return
   if (!isRecording) {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
@@ -75,6 +83,7 @@ recordButton.addEventListener('click', () => {
                       clearInterval(statusInterval); // Stop checking
                       if (response.status === "COMPLETED") {
                         console.log("Transcription Completed:", response.result);
+                        const user_input = response.result.text
                         const jsonString = `
                           {
                             "user_info": {
@@ -83,13 +92,13 @@ recordButton.addEventListener('click', () => {
                               "dyslexia": "true OR false"
                             },
                             "user_requests": ["explainPage", "magnifyPage", "unMagnifyPage", "reportIssue"],
-                            "assistant_response": "A friendly and brief response to the user in second person tone acknowledging what changes you are making to the website based on the user's accessibility needs. Keep in mind you are a friendly accessibility assistant, so this is your response to the user to keep them informed. For instance, if they mentioned something beyond the scope of your capabilities that you can't do, inform them. Speak in singular second person tone. You don't need to greet the person here because this is a continuation of the conversation. Also if they haven't mentioned any disabilities or only one or two, you should ask them if they have any of those other disabilities. Because the user doesn't know what you can do unless you tell them. But also don't say too much try to keep it conversational and encourage questions to keep the user engaged because remember that after this response you will go back and forth again this isn't your final interaction.", 
+                            "assistant_response": "A friendly and brief response to the user in second person tone acknowledging what changes you are making to the website based on the user's accessibility needs. Keep in mind you are a friendly accessibility assistant, so this is your response to the user to keep them informed. For instance, if they mentioned something beyond the scope of your capabilities that you can't do, inform them. Speak in singular second person tone. You don't need to greet the person here because this is a continuation of the conversation. Also if they haven't mentioned any disabilities or only one or two, you should ask them if they have any of those other disabilities. Because the user doesn't know what you can do unless you tell them. But also don't say too much try to keep it conversational and encourage questions to keep the user engaged because remember that after this response you will go back and forth again this isn't your final interaction. If the user has requested a command, say something similar to like stand by, I am implementing that right now. Only for if the user activates the explainPage command, make your response in this section brief and quick because the explainPage command will also activate speaking and then you will interupt each other. ", 
                           }`;
-                        const promptText = `You are an AI web accessibility assistant and you are tasked with interpreting the user’s most recent statement to you. The user most likely either gave you a brief description of any accessibility needs they may have, and you must take note of that and let them know that you are now changing websites to accomodate that disability. And/or, the user will be asking for a command for you to do a specific action on the current website, and you must also take note of this. Then, you will be generating a JSON object which encodes all this information. Here is what the user said, and you must strictly adhere to this in order to determine which values to give for the JSON fields: "${response.result.text}”. 
+                        const promptText = `You are an AI web accessibility assistant and you are tasked with interpreting the user’s most recent statement to you. The user most likely either gave you a brief description of any accessibility needs they may have, and you must take note of that and let them know that you are now changing websites to accomodate that disability. And/or, the user will be asking for a command for you to do a specific action on the current website, and you must also take note of this. Then, you will be generating a JSON object which encodes all this information. Here is what the user said, and you must strictly adhere to this in order to determine which values to give for the JSON fields: "${user_input}”. 
                         If the user didn't clearly mention any of the fields, don't fill them in. Also if anything needs clarification, for instance if they mentioned that they are colorblind but not what type, then generate a followup question in the assistant_response.
                         If none of the potential values in the JSON are mentioned, then don’t fill in anything. Similarly, if only one or two is mentioned, then only include those, not all. Then you must generate a response to the user explaining what you did and be friendly and asking them any followup questions if you have them. For context, here is some description on what the tools will do for each disability. For dyslexia, you will make the text all websites render in a dyslexia friendly font. For adhd, you will highlight/bold text and paragraphs according to the bionic reading method which will make it significantly easier to stay focused and engaged. For colorblindness, you will change the contrast and colors on websites to make things more visually perceivable for the user. 
-                        In terms of commands, magnify and unMagnify are obvious. ExplainPage however will use AI to fully explain the current part of the site to the user and how the user can interact with it and such. ReportIssue allows the user to raise an accessibility complaint with the owners of the site so that the site owners can comprehensively address it.
-                        Absolutely do not infer anything not mentioned by the user, and also do not mention in your responses any capabilities that I haven't discussed, as you won't be able to do them. And if the user does request a command, in your response tell them that you will carry out the command shortly. Be logical, think through your ideas, and output in the following JSON format only: \`\`\`${jsonString}\`\`\``;
+                        In terms of commands, magnifyPage and unMagnifyPage are obvious. explainPage however will use AI to fully explain the current part of the site to the user and how the user can interact with it and such. ReportIssue allows the user to raise an accessibility complaint with the owners of the site so that the site owners can comprehensively address it. Also, if the user has a specific question about the current website, activate the explainPage command, which will be able to answer specific questions about the site. And make sure all commands/user_info is written down precisely as it is here.
+                        Otherwise, absolutely do not infer anything not mentioned by the user, and also do not mention in your responses any capabilities that I haven't discussed, as you won't be able to do them. And if the user does request a command, in your response tell them that you will carry out the command shortly. Be logical, think through your ideas, and output in the following JSON format only: \`\`\`${jsonString}\`\`\``;
 
                         const options = {
                           method: 'POST',
@@ -117,8 +126,12 @@ recordButton.addEventListener('click', () => {
                             const response = data.choices[0].message.content;
                             const cleanedJson = JSON.parse(response.replace('```json', '').replace('```', '').trim())
                             console.log('loaded gpt response', cleanedJson);
-                            const asst_response = cleanedJson.assistant_response;
-                            textToSpeech(asst_response);
+                            const {assistant_response, user_requests, user_info} = cleanedJson;
+                            textToSpeech(assistant_response);
+                            user_requests.forEach(req => {
+                              executeUserRequest(req, user_input);
+                            }); 
+                            
                           }).catch(error =>  { console.error('Error during initial transcription request:', error); });
                       }  
                     }
@@ -253,18 +266,9 @@ const textToSpeechOpenAI = (text) => {
     })
 }
 
-// explainPage
-// const explainPageBtn = document.getElementById('explainPage');
-// const explainPageResuts = document.getElementById('explainPageResults');
-// explainPageBtn.addEventListener('click', () => {
-//   chrome.runtime.sendMessage({ action: 'explainPage' }, response => {
-//     const text = response.text;
-//     textToSpeech(text);
-//   });
-// });
-
 // choose provider
 const textToSpeech = textToSpeechOpenAI
 
-textToSpeech("What's good gang, Inky here.")
+// textToSpeech("What's good treehacker, Inky here, your AI accessibility assistant. What can I do for you today?")
 // textToSpeech("Hey there. I'm Inky, and I'm here to make the web more accessible and inclusive for you. Press on the mic and let me know what accessiblity needs you have. I'm looking forward to helping you out!");
+textToSpeech("What's good treehacker,  I'm Inky.")
