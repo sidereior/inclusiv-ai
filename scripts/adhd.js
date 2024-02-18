@@ -2,7 +2,7 @@ let
 minWordLength = 4,     // Minimum word length
 minTextLength = 20,    // Minimum text length
 boldRatio     = 0.4,   // Bold ratio (percentage of letters per word)
-doAdhd = false;
+doAdhd = true;
 const insertTextBefore = (text, node, bold) => {
     if (bold) {
         let span = document.createElement('span');
