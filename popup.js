@@ -1,4 +1,5 @@
 const playAudio = (url) => {
+  loader.style.display = 'none'; // stop loading
   audioElement.src = url
   audioElement.play()
 }
@@ -26,9 +27,7 @@ recordButton.addEventListener('click', () => {
 
         mediaRecorder.onstop = () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-          const audioUrl = URL.createObjectURL(audioBlob);
-          // speechToText(audioBlob);
-
+          
           document.querySelector('.loader').style.display = 'block';
 
           loader.style.display = 'block';
@@ -75,107 +74,53 @@ recordButton.addEventListener('click', () => {
                     if (response.status === "COMPLETED" || response.status === "FAILED") {
                       clearInterval(statusInterval); // Stop checking
                       if (response.status === "COMPLETED") {
-
-
                         console.log("Transcription Completed:", response.result);
-                        // Future logic goes here
-                        loader.style.display = 'none'; // Hide the loader when done
-                        // Assuming this part is inside the `if (response.status === "COMPLETED")` block of the transcription check
-
                         const jsonString = `
-{
-"changes_description": "A friendly and brief response to the user in second person tone acknowledging what changes you are making to the website based on the user's accessibility needs. Keep in mind you are a friendly accessibility assistant, so this is your response to the user to keep them informed. For instance, if they mentioned something beyond the scope of your capabilities, inform them.", 
-"user_data": {
-  "user_info": {
-    "colorblind": "n/a OR deutan OR protan OR tritan",
-    "adhd": "true OR false",
-    "dyslexia": "true OR false"
-  },
-  "user_requests": ["explainPage", "magnifyPage", "unMagnifyPage"]
-}`;
-                        const promptText = `You are tasked with taking what a user said and determining which json values for each field it should have. Users give you a brief description of any accessibility needs they may have, and you must fit what they say to json values for each part of the json format and give a brief greeting and 1 sentence description of which accessibility tools youre enabling for them. 
-The json should be in the format of: ${jsonString} . Here is what the user said, and you must strictly adhere to this in order to determine which values to give for the json fields: ${response.result} YOUR RESPONSE MUST BE IN THE FORMAT OF A JSON OBJECT. YOU CAN ONLY USE THE USER DATA PROVIDED TO YOU AND NOTHING ELSE. .
-YOU ARE ONLY ALLOWED TO RETURN SOMETHING FOR THE user_requests FIELD IF IT IS EXPLICITLY METIONED BY THE USER TO EITHER EXPLAIN THE PAGE, MANGNIFY, OR UNMAGNIFY THE PAGE. IF NONE OF THESE ARE MENTIONED RETURN NOTHING FOR THE user_requests FIELD, or if only one or two is mentioned, then only include those. Finally, your one sentence description must begin with a brief greeting and then describe the tools which you are enabling for the user based upon which values you are setting for the user_info and user_requetsts fields. You must not forget to greet the user in a happy way! Be nice!
-For the changes_description you must base what you say here on the values in which you set for the user_info and user_requests fields. This is extremely important that the changes_description is just a reiteration of the user_info and user_requests fields, only in a more human readable format. DO NOT INFER ANYTHING ABOUT ANY OF THE ACCESSIBILITY TOOLS. ONLY JUST STATE THE NAMES OF THE TOOLS AND THE USERS CAN UNDERSTAND WHAT THEY DO.
-Be logical, think through your ideas, and return this json object only.`;
+                          {
+                            "user_info": {
+                              "colorblind": "none OR deutan OR protan OR tritan",
+                              "adhd": "true OR false",
+                              "dyslexia": "true OR false"
+                            },
+                            "user_requests": ["explainPage", "magnifyPage", "unMagnifyPage", "reportIssue"],
+                            "assistant_response": "A friendly and brief response to the user in second person tone acknowledging what changes you are making to the website based on the user's accessibility needs. Keep in mind you are a friendly accessibility assistant, so this is your response to the user to keep them informed. For instance, if they mentioned something beyond the scope of your capabilities that you can't do, inform them. Speak in singular second person tone. You don't need to greet the person here because this is a continuation of the conversation. Also if they haven't mentioned any disabilities or only one or two, you should ask them if they have any of those other disabilities. Because the user doesn't know what you can do unless you tell them. But also don't say too much try to keep it conversational and encourage questions to keep the user engaged because remember that after this response you will go back and forth again this isn't your final interaction.", 
+                          }`;
+                        const promptText = `You are an AI web accessibility assistant and you are tasked with interpreting the user’s most recent statement to you. The user most likely either gave you a brief description of any accessibility needs they may have, and you must take note of that and let them know that you are now changing websites to accomodate that disability. And/or, the user will be asking for a command for you to do a specific action on the current website, and you must also take note of this. Then, you will be generating a JSON object which encodes all this information. Here is what the user said, and you must strictly adhere to this in order to determine which values to give for the JSON fields: "${response.result.text}”. 
+                        If the user didn't clearly mention any of the fields, don't fill them in. Also if anything needs clarification, for instance if they mentioned that they are colorblind but not what type, then generate a followup question in the assistant_response.
+                        If none of the potential values in the JSON are mentioned, then don’t fill in anything. Similarly, if only one or two is mentioned, then only include those, not all. Then you must generate a response to the user explaining what you did and be friendly and asking them any followup questions if you have them. For context, here is some description on what the tools will do for each disability. For dyslexia, you will make the text all websites render in a dyslexia friendly font. For adhd, you will highlight/bold text and paragraphs according to the bionic reading method which will make it significantly easier to stay focused and engaged. For colorblindness, you will change the contrast and colors on websites to make things more visually perceivable for the user. 
+                        In terms of commands, magnify and unMagnify are obvious. ExplainPage however will use AI to fully explain the current part of the site to the user and how the user can interact with it and such. ReportIssue allows the user to raise an accessibility complaint with the owners of the site so that the site owners can comprehensively address it.
+                        Absolutely do not infer anything not mentioned by the user, and also do not mention in your responses any capabilities that I haven't discussed, as you won't be able to do them. And if the user does request a command, in your response tell them that you will carry out the command shortly. Be logical, think through your ideas, and output in the following JSON format only: \`\`\`${jsonString}\`\`\``;
 
-                        // RETURN BACK TO THIS AND MAKE A HANDFUL OF SENTENCES THAT ARE THE DESCRIPTIONS OF EACH OF THE TOOLS AND THEN ADD THESE IN so it can describe stuff better
-
-                        const options3 = {
+                        const options = {
                           method: 'POST',
                           headers: {
-                            'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
+                            'authorization': 'Bearer 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'
                           },
-                          //make this less tso that it is more deteminintics
                           body: JSON.stringify({
-                            prompt: promptText,
-                            beam_size: 3,
-                            max_length: 256,
-                            repetition_penalty: 1.2,
-                            temp: 0.1,
-                            top_k: 40,
-                            top_p: 0.7
+                            "model": "gpt-4-turbo-preview",
+                            "messages": [
+                              {
+                                "role": "system",
+                                "content": "You are an extremely helpful and capable AI web accessibility assistant."
+                              },
+                              {
+                                "role": "user",
+                                "content": promptText
+                              },
+                            ]
                           })
-                        };
-
-                        fetch('https://api.monsterapi.ai/v1/generate/codellama-13b-instruct', options3)
+                        }
+                        fetch('https://api.openai.com/v1/chat/completions', options)
                           .then(response => response.json())
                           .then(data => {
-                            const processId = data.process_id;
-                            console.log('Request submitted, process ID:', processId);
-
-                            // Function to repeatedly check the status of the processing
-                            const checkProcessStatus = () => {
-                              const statusOptions = {
-                                method: 'GET',
-                                headers: {
-                                  'Accept': 'application/json',
-                                  'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
-                                }
-                              };
-
-                              fetch(`https://api.monsterapi.ai/v1/status/${processId}`, statusOptions)
-                                .then(response => response.json())
-                                .then(response => {
-                                  console.log("Process ID:", processId);
-                                  console.log("Status:", response.status);
-
-                                  if (response.status === "COMPLETED" || response.status === "FAILED") {
-                                    clearInterval(processStatusInterval); // Stop checking
-                                    if (response.status === "COMPLETED") {
-                                      const firstBraceIndex = jsonString.indexOf('{');
-                                      const validJsonString = jsonString.slice(firstBraceIndex);
-                                      console.log("PRE TEXT TO SPEECH Processing Completed:", response.result);
-                                      const resultJSON = JSON.parse(validJsonString);
-                                      if (resultJSON.changes_description) {
-                                        textToSpeech(resultJSON.changes_description);
-                                      } else {
-                                        console.log("No changes_description found in response.");
-                                      }
-
-
-                                    } else {
-                                      console.log("Processing Failed.");
-                                    }
-                                  }
-                                })
-                                .catch(error => {
-                                  console.error('Error during process status check:', error);
-                                  clearInterval(processStatusInterval); // Stop checking on error
-                                });
-                            };
-
-                            // Start checking the status every 500 milliseconds
-                            const processStatusInterval = setInterval(checkProcessStatus, 2000);
-                          })
-                          .catch(error => {
-                            console.error('Error submitting request for further processing:', error);
-                          });
-                      } else {
-                        console.log("Transcription Failed.");
-                      }
+                            const response = data.choices[0].message.content;
+                            const cleanedJson = JSON.parse(response.replace('```json', '').replace('```', '').trim())
+                            console.log('loaded gpt response', cleanedJson);
+                            const asst_response = cleanedJson.assistant_response;
+                            textToSpeech(asst_response);
+                          }).catch(error =>  { console.error('Error during initial transcription request:', error); });
+                      }  
                     }
                   })
                   .catch(error => {
@@ -184,14 +129,16 @@ Be logical, think through your ideas, and return this json object only.`;
                     loader.style.display = 'none';
                   });
               };
-
-              // Start checking the status every 0.5 seconds
+              
+              // Start checking the status every 500 milliseconds
               const statusInterval = setInterval(checkStatus, 2000);
+            
             })
             .catch(error => {
               console.error('Error during initial transcription request:', error);
               loader.style.display = 'none'; 
             });
+
           // audioElement.play();
           micIcon.src = 'images/mic-23.png'; // Change back to mic icon
           recordButton.classList.add('no-animation');
@@ -307,16 +254,17 @@ const textToSpeechOpenAI = (text) => {
 }
 
 // explainPage
-const explainPageBtn = document.getElementById('explainPage');
-const explainPageResuts = document.getElementById('explainPageResults');
-explainPageBtn.addEventListener('click', () => {
-  chrome.runtime.sendMessage({ action: 'explainPage' }, response => {
-    const text = response.text;
-    textToSpeech(text);
-  });
-});
+// const explainPageBtn = document.getElementById('explainPage');
+// const explainPageResuts = document.getElementById('explainPageResults');
+// explainPageBtn.addEventListener('click', () => {
+//   chrome.runtime.sendMessage({ action: 'explainPage' }, response => {
+//     const text = response.text;
+//     textToSpeech(text);
+//   });
+// });
 
 // choose provider
 const textToSpeech = textToSpeechOpenAI
 
-textToSpeech("Hey there. I am Inclusive AI, your personal AI assistant. I can help you make your website more accessible. Just click on the mic and tell me what you accessiblity needs you have. Looking forward to helping you out!");
+textToSpeech("What's good gang, Inky here.")
+// textToSpeech("Hey there. I'm Inky, and I'm here to make the web more accessible and inclusive for you. Press on the mic and let me know what accessiblity needs you have. I'm looking forward to helping you out!");

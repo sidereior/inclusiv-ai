@@ -12,3 +12,5 @@ report generation
 
 todo:
 general accessibility improvement and standards
+answer questions about the site
+give explainsite context about users question
