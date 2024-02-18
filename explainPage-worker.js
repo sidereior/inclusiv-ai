@@ -43,7 +43,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             
         });
     } else {
-      chrome.runtime.sendMessage({message});
+      chrome.runtime.sendMessage(message);
     }
     return true;
   });

@@ -21,8 +21,6 @@ const audioElement = document.getElementById('audio');
 const loader = recordButton.querySelector('.loader');
 
 recordButton.addEventListener('click', () => {
-  executeUserRequest('magnifyPage', 'test')
-  return
   if (!isRecording) {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
