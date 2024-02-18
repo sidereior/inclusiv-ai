@@ -1,3 +1,4 @@
+{
 const cssRules = `
 
 @font-face {
@@ -23,6 +24,7 @@ const styleElement = document.createElement('style');
 
 // Set the CSS content
 styleElement.textContent = cssRules;
+}
 
 // Append the <style> element to the <head> of the document
 document.head.appendChild(styleElement);
