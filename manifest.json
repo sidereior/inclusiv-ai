@@ -6,13 +6,23 @@
     "permissions": [
       "storage"
     ],
+    "web_accessible_resources": [
+      {
+        "resources": ["assets/fonts/*"],
+        "matches": ["<all_urls>"]
+      }
+    ],
     "content_scripts": [
           {
             "js": ["scripts/colorblind.js"],
             "matches": ["<all_urls>"]
           },
           {
-            "js": ["scripts/bionic.js"],
+            "js": ["scripts/adhd.js"],
+            "matches": ["<all_urls>"]
+          },
+          {
+            "js": ["scripts/dyslexia.js"],
             "matches": ["<all_urls>"]
           }
     ],

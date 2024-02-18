@@ -1,14 +1,8 @@
-/* Bread (Bionic Reading) - Read text faster & easier */
-/* source: https://github.com/tobyxdd/bread (v1.0.5) */
-/* jshint esversion: 6 */
-
 let
 minWordLength = 4,     // Minimum word length
 minTextLength = 20,    // Minimum text length
 boldRatio     = 0.4,   // Bold ratio (percentage of letters per word)
-processDyn    = true,  // Process dynamically loaded content, which may cause performance issues (True/False)
-breadAllSites = true  // Apply to all sites visited (True), or just the ones listed in breadSites (False)
-
+doAdhd = false;
 const insertTextBefore = (text, node, bold) => {
     if (bold) {
         let span = document.createElement('span');
@@ -76,6 +70,8 @@ document.head.appendChild(document.createElement('style')).textContent = `
     }
 `;
 
+if (doAdhd){
 let breadNode = 'body'
 let node = document.querySelector(breadNode);
 processNode(node);
+}

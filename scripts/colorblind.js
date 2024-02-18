@@ -1,12 +1,7 @@
-const dontFetch = true;
+const dontFetch = false;
 
 
-// Function to fetch CSS file
-function fetchCSS(url) {
-    return fetch(url)
-        .then(response => response.text())
-        .catch(error => console.error('Error fetching CSS file:', error));
-}
+var cssContentArray = [];
 
 // Function to extract inline styles from HTML elements
 function extractInlineStyles() {
@@ -20,26 +15,22 @@ function extractInlineStyles() {
     });
     return inlineStyles.join('\n'); // Concatenate inline styles with newline separator
 }
-
-// Get all <link> elements with rel="stylesheet"
-var linkElements = document.querySelectorAll('link[rel="stylesheet"]');
-var cssContentArray = [];
-
-// Fetch and extract external CSS files
-Promise.all(Array.from(linkElements).map(linkElement => {
-    var cssUrl = linkElement.getAttribute('href');
-    return fetchCSS(cssUrl)
-        .then(cssContent => {
-            cssContentArray.push(cssContent);
-        });
-}))
-
-
-.then(() => {
-    if (dontFetch) {
-        console.log('dontFetch')
-        return;
+var stylesheets = document.styleSheets;
+for (var i = 0; i < stylesheets.length; i++) {
+    var rules;
+    try {
+        rules = stylesheets[i].cssRules || stylesheets[i].rules;
+    } catch (e) {
+        console.error('Access to stylesheet rules blocked by CORS policy:', e);
+        continue;
     }
+    var cssText = '';
+    for (var j = 0; j < rules.length; j++) {
+        cssText += rules[j].cssText + '\n';
+    }
+    cssContentArray.push(cssText);
+}
+
 
     // Extract inline styles
     var inlineStyles = extractInlineStyles();
@@ -74,11 +65,10 @@ Promise.all(Array.from(linkElements).map(linkElement => {
                 console.log(data);
 
                 var cssCode = data.choices[0].message.content;
-                var cssCodeCleaned = cssCode.replace('<style>', '').replace('</style>', '');
+                var cssCodeCleaned = cssCode.replace('<style>', '').replace('</style>', '').replace('```html', '').replace('```css', '').replace('```', '').trim();
                 var styleElement = document.createElement('style');
                 styleElement.textContent = cssCodeCleaned;
                 document.head.appendChild(styleElement);
               })
               
-})
 
