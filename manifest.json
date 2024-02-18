@@ -9,7 +9,8 @@
     "scripting",
     "tabs",
     "webNavigation",
-    "webRequest"
+    "webRequest",
+    "audio"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -46,8 +47,7 @@
     },
     {
       "js": [
-        "scripts/dyslexia.js",
-        "scripts/pageSnippetContent.js"
+        "scripts/dyslexia.js"
       ],
       "matches": [
         "<all_urls>"
