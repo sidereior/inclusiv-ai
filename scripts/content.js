@@ -42,7 +42,6 @@ Promise.all(Array.from(linkElements).map(linkElement => {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': 'Bearer ' + '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'
                 },
                 body: JSON.stringify({
                   "model": "gpt-4-turbo-preview",
