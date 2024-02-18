@@ -3,19 +3,20 @@ const activateDyslexia = false;
 const cssRules = `
 
 @font-face {
-    font-family: 'OpenDyslexic3-Bold';
+    font-family: 'OpenDyslexic3';
     src: url(${chrome.runtime.getURL('./assets/fonts/OpenDyslexic3-Bold.ttf')});
     font-weight: bold;
-  }
+}
+
   
 @font-face {
-    font-family: 'OpenDyslexic3-Regular';
+    font-family: 'OpenDyslexic3';
     src: url(${chrome.runtime.getURL('./assets/fonts/OpenDyslexic3-Regular.ttf')});
     font-weight: normal;
 }
 
 * {
-    font-family: 'OpenDyslexic3-Regular', sans-serif !important;
+    font-family: 'OpenDyslexic3', sans-serif !important;
 }
 `;
 

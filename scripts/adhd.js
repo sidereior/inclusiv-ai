@@ -66,7 +66,7 @@ const processNode = root => {
 document.head.appendChild(document.createElement('style')).textContent = `
     span.bread {
         display: contents !important;
-        font-weight: bolder !important;
+        font-weight: bold !important;
     }
 `;
 
