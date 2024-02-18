@@ -10,6 +10,7 @@ const recordButton = document.getElementById('recordButton');
 const micIcon = recordButton.querySelector('.mic-icon');
 const micShadow = recordButton.querySelector('.mic-shadow');
 const audioElement = document.getElementById('audio');
+const loader = recordButton.querySelector('.loader');
 
 recordButton.addEventListener('click', () => {
 
@@ -27,6 +28,10 @@ recordButton.addEventListener('click', () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
           const audioUrl = URL.createObjectURL(audioBlob);
           // speechToText(audioBlob);
+
+          document.querySelector('.loader').style.display = 'block';
+
+          loader.style.display = 'block';
 
           const form = new FormData();
           form.append('file', audioBlob, 'audio.wav');
@@ -73,6 +78,8 @@ recordButton.addEventListener('click', () => {
 
 
                         console.log("Transcription Completed:", response.result);
+                        // Future logic goes here
+                        loader.style.display = 'none'; // Hide the loader when done
                         // Assuming this part is inside the `if (response.status === "COMPLETED")` block of the transcription check
 
                         const jsonString = `
@@ -174,6 +181,7 @@ Be logical, think through your ideas, and return this json object only.`;
                   .catch(error => {
                     console.error('Error during status check:', error);
                     clearInterval(statusInterval); // Stop checking on error
+                    loader.style.display = 'none';
                   });
               };
 
@@ -182,6 +190,7 @@ Be logical, think through your ideas, and return this json object only.`;
             })
             .catch(error => {
               console.error('Error during initial transcription request:', error);
+              loader.style.display = 'none'; 
             });
           // audioElement.play();
           micIcon.src = 'images/mic-23.png'; // Change back to mic icon
