@@ -32,6 +32,7 @@
     color: #FFFFFF; /* Explicitly set the color to white */
     opacity: 1;
     background: none; 
+    justify-content: space-between;
   }
   .text-gradient { /* Updated class name to match HTML */
     font-size: 48px; /* Adjust the size as needed to ensure the gradient is visible */
@@ -58,15 +59,23 @@
   transform: translate(-50%, -50%);
   border-radius: 100%;
   z-index: 2;
-  box-shadow: 0 0 20px 20px #1c084f;
 }
 
 .mic::after {
-  width: 80px;
-  height: 80px;
-  background-color: #C51162;
-  animation: circle-size 0.8s linear infinite alternate;
-}
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background-color: #C51162; /* Pink background color */
+    border-radius: 50%;
+    z-index: 1; /* Below the mic icon */
+    box-shadow: 0 0 20px 20px #1c084f; /* Outer glow effect */
+    display: block; /* Ensure it's always displayed */
+  }
+
 .mic-icon {
   box-sizing: border-box;
   position: absolute;
@@ -80,18 +89,39 @@
   z-index: 3;
   visibility: visible; /* Added visibility property */
 }
+
 .mic-shadow {
+  display: none;
   width: 80px;
   height: 80px;
   position: absolute;
   top: 50%;
   left: 50%;
   border-radius: 100%;
-  z-index: 1;
+  z-index: 0;
   box-shadow: 6px -33px 18px 9px #823ca6, 14.4px -6px 28.2px 6px #aab3d2, -12.6px -15px 58.2px 6px #5acee3, 30.6px 3px 10.2px 6px #1b7d8f, 1.8px 1.2px 46.2px 6px #f30bf5;  
   animation: shadow-rotate 1.5s linear infinite;
   transform-origin: center;
+  display: none;
 }
+/* The default state without rotating circles */
+.mic.no-animation::after,
+.mic.no-animation .mic-shadow {
+  animation: none;
+}
+
+
+
+
+/* Only play animations when the recording class is present */
+.mic.recording .mic-shadow {
+  display: block;
+  animation: shadow-rotate 1.5s linear infinite;
+}
+.mic.recording::after {
+  animation: circle-size 0.8s linear infinite alternate;
+}
+
 @keyframes circle-size {
   from {
     width: 80px;
@@ -137,11 +167,12 @@
     top: 50%;
     left: 50%;
   "></div>
-  <h1 class="text-gradient">inclusiv ai</h1>
-  <div class="description">your ai accesibility copilot!</div>
-  <button id="recordButton" class="mic">
-    <img src="images/mic-23.png" class="mic-icon" alt="Mic Icon">
+  <h1 class="text-gradient">inclusiv ai
+    <div class="description">your ai accessibility copilot!</div>
+  </h1>
+  <button id="recordButton" class="mic no-animation">
     <div class="mic-shadow"></div>
+    <img src="images/mic-23.png" class="mic-icon" alt="Mic Icon">
   </button>
   <audio id="audio" style="display: none;"></audio>
   <script src="popup.js"></script>
