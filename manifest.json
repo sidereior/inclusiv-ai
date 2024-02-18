@@ -9,8 +9,7 @@
     "scripting",
     "tabs",
     "webNavigation",
-    "webRequest",
-    "webRequestBlocking"
+    "webRequest"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -26,7 +25,7 @@
     }
   ],
   "background": {
-    "service_worker": "service-worker.js"
+    "service_worker": "screenshot-service-worker.js"
   },
   "content_scripts": [
     {

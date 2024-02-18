@@ -51,7 +51,7 @@ recordButton.addEventListener('click', () => {
                   method: 'GET',
                   headers: {
                     accept: 'application/json',
-                    authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
+                    authorization: 'Bearer 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'
                   }
                 };
 
@@ -99,4 +99,16 @@ recordButton.addEventListener('click', () => {
     recordButton.textContent = 'Start Recording';
     isRecording = false;
   }
+});
+
+
+
+
+// explainPage
+const explainPageBtn = document.getElementById('explainPage');
+const explainPageResuts = document.getElementById('explainPageResults');
+explainPageBtn.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ action: 'explainPage' }, response => {
+    explainPageResults.textContent = response.text;
+  });
 });
