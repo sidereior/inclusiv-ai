@@ -1,4 +1,4 @@
-let
+{
 minWordLength = 4,     // Minimum word length
 minTextLength = 20,    // Minimum text length
 boldRatio     = 0.4,   // Bold ratio (percentage of letters per word)
@@ -74,4 +74,5 @@ if (doAdhd){
 let breadNode = 'body'
 let node = document.querySelector(breadNode);
 processNode(node);
+}
 }
