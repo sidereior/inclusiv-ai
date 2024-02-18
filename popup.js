@@ -1,3 +1,6 @@
+
+
+
 // popup.js
 let mediaRecorder;
 let audioChunks = [];
@@ -53,7 +56,7 @@ recordButton.addEventListener('click', () => {
                   method: 'GET',
                   headers: {
                     accept: 'application/json',
-                    authorization: 'Bearer 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'
+                    authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
                   }
                 };
 
@@ -66,8 +69,14 @@ recordButton.addEventListener('click', () => {
                     if (response.status === "COMPLETED" || response.status === "FAILED") {
                       clearInterval(statusInterval); // Stop checking
                       if (response.status === "COMPLETED") {
+
+
                         console.log("Transcription Completed:", response.result);
-                        const jsonString = `{
+                        // Assuming this part is inside the `if (response.status === "COMPLETED")` block of the transcription check
+
+const jsonString = `
+"changes_description": "A greeting and brief description of the changes made to the page to make it more accessible to the user.", 
+"user_data": {
   "user_info": {
     "colorblind": "n/a OR red-green OR blue-black",
     "adhd": "true OR false",
@@ -75,52 +84,79 @@ recordButton.addEventListener('click', () => {
   },
   "user_requests": ["explainPage", "magnifyPage", "unMagnifyPage", "etc"]
 }`;
-                       const promptText = "You are tasked with taking a user's text and determing which json values for each field it should have. Users give you a brief description of themselves and any accessibility needs they may have, and you must determine which json values are most fitting for them. The json should be in the format of: " + jsonString + " . The user's description is: " + response.result + " . Determine the json values for each field and you must use some inference in order to determine some fields as a user may only mention a few acessibility needs (or may mention them in an odd way and you must infer what this means) and this means that the rest of the values would be set to whatever value makes them not take effect.";
+const promptText = `You are tasked with taking a user's text and determining which json values for each field it should have. Users give you a brief description of themselves and any accessibility needs they may have, and you must determine which json values are most fitting for them and give a short 1-2 sentence description of which tools you're enabling and greeting the user. The json should be in the format of: ${jsonString} . The user's description is: ${response.result} . Determine the json values for each field and you must use some inference in order to determine some fields as a user may only mention a few accessibility needs (or may mention them in an odd way and you must infer what this means) and this means that the rest of the values would be set to whatever value makes them not take effect. Additionaly be sure to make the brief sentence greeting the user and explaining what you're enabling for them.`;
 
-                        const options3 = {
-                        method: 'POST',
-                        headers: {
-                          accept: 'application/json',
-                          'content-type': 'application/json',
-                          authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
-                        },
-                        body: JSON.stringify({
-                          prompt: promptText, // Your task for Llama
-                          beam_size: 1, // Optional: Adjust as needed
-                          max_length: 256, // Optional: Adjust as needed
-                          repetition_penalty: 1.2, // Optional: Adjust as needed
-                          temp: 0.98, // Optional: Adjust as needed
-                          top_k: 40, // Optional: Adjust as needed
-                          top_p: 0.9 // Optional: Adjust as needed
-                        })
-                      };
+const options3 = {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
 
-                      fetch('https://api.monsterapi.ai/v1/generate/llama2-7b-chat', options3)
-                        .then(response => response.json())
-                        .then(response => {
-                            console.log("Process ID:", response.process_id);
-                    console.log("Status:", response.status);
+    
+  },
+  body: JSON.stringify({
+    prompt: promptText,
+    beam_size: 1,
+    max_length: 256,
+    repetition_penalty: 1.2,
+    temp: 0.98,
+    top_k: 40,
+    top_p: 0.9
+  })
+};
 
-                    if (response.status === "COMPLETED" || response.status === "FAILED") {
-                      clearInterval(statusInterval); // Stop checking
-                      if (response.status === "COMPLETED") {
-                        // this is the json that monsster api has generated
-                        console.log("monster api generated:", response.result);
-                        
+fetch('https://api.monsterapi.ai/v1/generate/llama2-7b-chat', options3)
+  .then(response => response.json())
+  .then(data => {
+    const processId = data.process_id;
+    console.log('Request submitted, process ID:', processId);
 
-                      }
-                    }
+    // Function to repeatedly check the status of the processing
+    const checkProcessStatus = () => {
+      const statusOptions = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
+        }
+      };
 
-                    else {
-                      console.log("Transcription Failed.");
-                    }
+      fetch(`https://api.monsterapi.ai/v1/status/${processId}`, statusOptions)
+        .then(response => response.json())
+        .then(statusResponse => {
+          console.log("Process ID:", processId);
+          console.log("Status:", statusResponse.status);
+
+          if (statusResponse.status === "COMPLETED" || statusResponse.status === "FAILED") {
+            clearInterval(processStatusInterval); // Stop checking
+            if (statusResponse.status === "COMPLETED") {
+              console.log("Processing Completed:", statusResponse.result);
 
 
-                        })
-                         .catch(error => {
-                    console.error('Error during status check:', error);
-                    clearInterval(statusInterval); // Stop checking on error
-                  });
+              
+
+              // Here, handle the result of the processing
+            } else {
+              console.log("Processing Failed.");
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error during process status check:', error);
+          clearInterval(processStatusInterval); // Stop checking on error
+        });
+    };
+
+    // Start checking the status every 500 milliseconds
+    const processStatusInterval = setInterval(checkProcessStatus, 500);
+  })
+  .catch(error => {
+    console.error('Error submitting request for further processing:', error);
+  });
+
+
+
                       } else {
                         console.log("Transcription Failed.");
                       }
@@ -133,12 +169,12 @@ recordButton.addEventListener('click', () => {
               };
 
               // Start checking the status every 0.5 seconds
-              const statusInterval = setInterval(checkStatus, 500);
+              const statusInterval = setInterval(checkStatus, 2);
             })
             .catch(error => {
               console.error('Error during initial transcription request:', error);
             });
-          audioElement.play();
+         // audioElement.play();
           micIcon.src = 'images/mic-23.png'; // Change back to mic icon
           recordButton.classList.add('no-animation');
           recordButton.classList.remove('recording'); // Stop the animation
