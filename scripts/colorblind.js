@@ -1,3 +1,4 @@
+{
 var cssContentArray = [];
 
 // Function to extract inline styles from HTML elements
@@ -67,5 +68,6 @@ fetch('https://api.openai.com/v1/chat/completions', {
     styleElement.textContent = cssCodeCleaned;
     document.head.appendChild(styleElement);
   })
+}
 
 
