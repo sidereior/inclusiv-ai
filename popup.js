@@ -262,6 +262,4 @@ const textToSpeechOpenAI = (text) => {
 // choose provider
 const textToSpeech = textToSpeechOpenAI
 
-// textToSpeech("What's good treehacker, Inky here, your AI accessibility assistant. What can I do for you today?")
-// textToSpeech("Hey there. I'm Inky, and I'm here to make the web more accessible and inclusive for you. Press on the mic and let me know what accessiblity needs you have. I'm looking forward to helping you out!");
-textToSpeech("What's good treehacker,  I'm Inky.")
+textToSpeech("What's good treehacker, Inky here, your AI accessibility assistant. What can I do for you today?")
