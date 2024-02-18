@@ -3,10 +3,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&display=swap" rel="stylesheet">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
+  
+
   body {
     margin: 0;
     padding: 20px;
@@ -15,6 +19,43 @@
     color: white;
     text-align: center;
     }
+
+/* Style the checkbox */
+input[type="checkbox"] {
+  height: 40px; /* Smaller height */
+  width: 40px; /* Smaller width */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 5px solid transparent; /* Smaller border */
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 
+    -2px -2px 4px rgba(243, 11, 245, 0.63),
+    2px 2px 4px rgba(70, 70, 70, 0.12);
+  border-radius: 50%;
+  position: absolute;
+  top: 20px; /* Distance from the top */
+  right: 20px; /* Distance from the right */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Style the icon inside the checkbox */
+input[type="checkbox"]::after {
+  content: "\23FB"; /* Unicode power symbol */
+  color: #7a7a7a;
+  font-size: 30px; /* Adjust the font size as necessary */
+  transition: color 0.3s;
+}
+
+/* Change icon color when checked */
+input[type="checkbox"]:checked::after{
+  color: #15e38a;
+}
   .logo {
     margin-bottom: 24px;
   }
@@ -41,7 +82,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text; /* For browsers that support the unprefixed property */
-    text-fill-color: transparent; /* For browsers that support the unprefixed property */
   }
 
   .mic {
@@ -204,6 +244,9 @@
   }
 }
 
+
+
+
   
 </style>
 </head>
@@ -230,6 +273,10 @@
     top: 50%;
     left: 50%;
   "></div>
+
+  <body>
+    <input type="checkbox" />
+  </body>
   <h1 class="text-gradient">inclusiv.
     <div class="description">ai copilot for accessibility</div>
   </h1>
