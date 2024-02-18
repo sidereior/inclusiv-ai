@@ -3,7 +3,6 @@ const playAudio = (url) => {
   audioElement.play()
 }
 
-
 let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
@@ -62,7 +61,6 @@ recordButton.addEventListener('click', () => {
                     authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
                   }
                 };
-
                 fetch(`https://api.monsterapi.ai/v1/status/${processId}`, options2)
                   .then(response => response.json())
                   .then(response => {
@@ -79,18 +77,18 @@ recordButton.addEventListener('click', () => {
 
                         const jsonString = `
 {
-"changes_description": "A greeting and brief description of the changes made to the page to make it more accessible to the user.", 
+"changes_description": "A friendly and brief response to the user in second person tone acknowledging what changes you are making to the website based on the user's accessibility needs. Keep in mind you are a friendly accessibility assistant, so this is your response to the user to keep them informed. For instance, if they mentioned something beyond the scope of your capabilities, inform them.", 
 "user_data": {
   "user_info": {
-    "colorblind": "n/a OR red-green OR blue-black",
+    "colorblind": "n/a OR deutan OR protan OR tritan",
     "adhd": "true OR false",
     "dyslexia": "true OR false"
   },
   "user_requests": ["explainPage", "magnifyPage", "unMagnifyPage"]
 }`;
                         const promptText = `You are tasked with taking what a user said and determining which json values for each field it should have. Users give you a brief description of any accessibility needs they may have, and you must fit what they say to json values for each part of the json format and give a brief greeting and 1 sentence description of which accessibility tools youre enabling for them. 
-The json should be in the format of: ${jsonString} . Here is what the user said, and you must strictly adhere to this in order to determine which values to give for the json fields:  ${response.result} YOUR RESPONSE MUST BE IN THE FORMAT OF A JSON OBJECT. YOU CAN ONLY USE THE USER DATA PROVIDED TO YOU AND NOTHING ELSE. .
-YOU ARE ONLY ALLOWED TO RETURN SOMETHING FOR THE user_requests FIELD IF IT IS EXPLICELY METIONED BY THE USER TO EITHER EXPLAIN THE PAGE, MANGNIFY, OR UNMAGNIFY THE PAGE. IF NONE OF THESE ARE MENTIONED RETURN NOTHING FOR THE user_requests FIELD. Finally, your one sentence description must begin with a brief greeting and then describe the tools which you are enabling for the user based upon which values you are setting for the user_info and user_requetsts fields. You must not forget to greet the user in a happy way! Be nice!
+The json should be in the format of: ${jsonString} . Here is what the user said, and you must strictly adhere to this in order to determine which values to give for the json fields: ${response.result} YOUR RESPONSE MUST BE IN THE FORMAT OF A JSON OBJECT. YOU CAN ONLY USE THE USER DATA PROVIDED TO YOU AND NOTHING ELSE. .
+YOU ARE ONLY ALLOWED TO RETURN SOMETHING FOR THE user_requests FIELD IF IT IS EXPLICITLY METIONED BY THE USER TO EITHER EXPLAIN THE PAGE, MANGNIFY, OR UNMAGNIFY THE PAGE. IF NONE OF THESE ARE MENTIONED RETURN NOTHING FOR THE user_requests FIELD, or if only one or two is mentioned, then only include those. Finally, your one sentence description must begin with a brief greeting and then describe the tools which you are enabling for the user based upon which values you are setting for the user_info and user_requetsts fields. You must not forget to greet the user in a happy way! Be nice!
 For the changes_description you must base what you say here on the values in which you set for the user_info and user_requests fields. This is extremely important that the changes_description is just a reiteration of the user_info and user_requests fields, only in a more human readable format. DO NOT INFER ANYTHING ABOUT ANY OF THE ACCESSIBILITY TOOLS. ONLY JUST STATE THE NAMES OF THE TOOLS AND THE USERS CAN UNDERSTAND WHAT THEY DO.
 Be logical, think through your ideas, and return this json object only.`;
 
@@ -102,8 +100,6 @@ Be logical, think through your ideas, and return this json object only.`;
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                             'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjE4ZGIzN2I0MmU5ZTU4OTllNzI1OWM4NzZhZWUwZjAzIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDItMTdUMDg6MTk6MjAuMzg3NzExIn0.XMGqFSpcgakTSAD2TSnSdnWdO15jQhMwErctkp8PUTo'
-
-
                           },
                           //make this less tso that it is more deteminintics
                           body: JSON.stringify({
@@ -170,9 +166,6 @@ Be logical, think through your ideas, and return this json object only.`;
                           .catch(error => {
                             console.error('Error submitting request for further processing:', error);
                           });
-
-
-
                       } else {
                         console.log("Transcription Failed.");
                       }
