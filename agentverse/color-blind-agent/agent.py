@@ -9,15 +9,7 @@ css_modification_protocol = Protocol("CSSModification")
 
 @css_modification_protocol.on_message(model=CSSRequest, replies={UAgentResponse})
 async def modify_css(ctx: Context, sender: str, msg: CSSRequest):
-    # Hardcoded URL for the OpenAI Chat API
-    ai_service_url = "https://api.openai.com/v1/chat/completions"
-
-    # API key stored securely in environment variable
-    api_key = os.getenv("OPENAI_API_KEY")
-
-    # Validate API key presence
-    if not api_key:
-        raise ValueError("OPENAI_API_KEY is not set in the environment!")
+    api_key = "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" 
 
     headers = {
         'Content-Type': 'application/json',
@@ -25,7 +17,7 @@ async def modify_css(ctx: Context, sender: str, msg: CSSRequest):
     }
 
     data = {
-        "model": "gpt-4-turbo-preview",
+        "model": "gpt-3.5-turbo-0125",
         "messages": [
             {
                 "role": "system",
