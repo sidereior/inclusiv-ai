@@ -1,34 +1,38 @@
 // popup.js
-let recordButton = document.getElementById('recordButton');
 let mediaRecorder;
 let audioChunks = [];
+let isRecording = false;
+const recordButton = document.getElementById('recordButton');
+const audioElement = document.getElementById('audio'); // Assuming you have an <audio> element in your popup.html
 
 recordButton.addEventListener('click', () => {
-  // If the MediaRecorder is inactive, start recording
-  if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+  if (!isRecording) {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
         mediaRecorder = new MediaRecorder(stream);
+        audioChunks = []; // Reset the chunks array for new recording
+        
         mediaRecorder.ondataavailable = event => {
           audioChunks.push(event.data);
         };
+
         mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks);
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
           const audioUrl = URL.createObjectURL(audioBlob);
-          const audio = new Audio(audioUrl);
-          // Play the audio at the end of recording
-          // Do something with the audio data, e.g., save it or send to server
+          audioElement.src = audioUrl; // Set the source of the audio element to the blob URL
         };
-        audioChunks = []; // Reset chunks for new recording
+
         mediaRecorder.start();
-        recordButton.textContent = 'Stop Recording'; // Update button text
+        recordButton.textContent = 'Stop Recording';
+        isRecording = true;
       })
-      .catch(e => {
-        console.error('Could not start audio recording:', e);
+      .catch(error => {
+        console.error('Error accessing the microphone:', error);
       });
-  } else if (mediaRecorder.state === 'recording') {
-    // If the MediaRecorder is recording, stop recording
+  } else {
+    // When the user clicks to stop recording
     mediaRecorder.stop();
-    recordButton.textContent = 'Start Recording'; // Update button text
+    recordButton.textContent = 'Start Recording';
+    isRecording = false;
   }
 });
