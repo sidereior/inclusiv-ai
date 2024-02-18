@@ -1,12 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&display=swap" rel="stylesheet">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha384-SZXxX4whJvz7eXnH5hEwk76C6KA4v/q+Dh1I1c6X+3vv9hnXctKf1h9Ib6J2Sl9G"
+    crossorigin="anonymous"
+  />
+
 <style>
+  
+
   body {
     margin: 0;
     padding: 20px;
@@ -15,6 +26,44 @@
     color: white;
     text-align: center;
     }
+
+/* Style the checkbox */
+input[type="checkbox"] {
+  height: 40px; /* Smaller height */
+  width: 40px; /* Smaller width */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 5px solid transparent; /* Smaller border */
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 
+    -2px -2px 4px rgba(243, 11, 245, 0.63),
+    2px 2px 4px rgba(70, 70, 70, 0.12);
+  border-radius: 50%;
+  position: absolute;
+  top: 20px; /* Distance from the top */
+  right: 20px; /* Distance from the right */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Style the icon inside the checkbox */
+input[type="checkbox"]::after {
+  font-family: FontAwesome;
+  content: "\f011"; /* Lightbulb icon */
+  color: #7a7a7a;
+  font-size: 20px; /* Smaller icon */
+  transition: color 0.3s;
+}
+
+/* Change icon color when checked */
+input[type="checkbox"]:checked::after{
+  color: #15e38a;
+}
   .logo {
     margin-bottom: 24px;
   }
@@ -204,9 +253,16 @@
   }
 }
 
+
+
+
   
 </style>
 </head>
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    /> 
 <body style="
   width: 95vw;
   height: 95vh;
@@ -230,6 +286,10 @@
     top: 50%;
     left: 50%;
   "></div>
+
+  <body>
+    <input type="checkbox" />
+  </body>
   <h1 class="text-gradient">inclusiv.
     <div class="description">your ai accessibility copilot!</div>
   </h1>
